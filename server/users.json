@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1767614889283,
+    "email": "den1sqa97@yandex.ru",
+    "password": "$2a$10$m2kdKbWbc1HruCvWk98RAu5uavu940AmtE9AFyBp8plq1Qthyl43a",
+    "age": 111,
+    "createdAt": "2026-01-05T12:08:09.283Z"
+  },
+  {
+    "id": 1767883260287,
+    "email": "admin",
+    "password": "$2a$10$hCTFIQkXPLrHHZ2XHo31SOX2g2vj43.armWo8QVX1nCsOSntgllWe",
+    "age": 11,
+    "createdAt": "2026-01-08T14:41:00.287Z"
+  }
+]
