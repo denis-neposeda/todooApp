@@ -1,6 +1,7 @@
-import type { ITodo } from "../models/ITodo";
-import type { FilterType } from "../store/reducers/todoListSlice";
 import { api } from "./api";
+
+import type { FilterType } from "@/store";
+import type { ITodo } from "@/types";
 
 export const API_URL = "http://localhost:3001";
 
@@ -15,10 +16,10 @@ export interface TodosResponse {
 export const fetchTodosRequest = async (
   page: number,
   limit: number,
-  filter: FilterType
+  filter: FilterType,
 ): Promise<TodosResponse> => {
   const response = await api.get(
-    `${API_URL}/todos?page=${page}&limit=${limit}&filter=${filter}`
+    `${API_URL}/todos?page=${page}&limit=${limit}&filter=${filter}`,
   );
   return response.data;
 };

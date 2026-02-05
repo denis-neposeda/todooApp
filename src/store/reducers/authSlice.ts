@@ -1,5 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../../api/api";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+import { api } from "@/api";
+import { type ApiError, type AuthResponse, isApiError } from "@/types";
 
 interface User {
   id: number;
@@ -8,7 +10,7 @@ interface User {
   createdAt: string;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   token: string | null;
   status: "idle" | "loading" | "failed";
@@ -22,23 +24,58 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (data: { email: string; password: string }) => {
-    const res = await api.post("/auth/login", data);
+export const loginUser = createAsyncThunk<
+  AuthResponse,
+  { email: string; password: string },
+  { rejectValue: ApiError }
+>("auth/login", async (data, { rejectWithValue }) => {
+  try {
+    const res = await api.post<AuthResponse>("/auth/login", data);
     return res.data;
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "response" in error) {
+      const responseData = (error as any).response?.data;
+      if (isApiError(responseData)) {
+        return rejectWithValue(responseData);
+      }
+    }
   }
-);
+  const res = await api.post("/auth/login", data);
+  return res.data;
+});
 
-export const registerUser = createAsyncThunk(
-  "auth/register",
-  async (data: { email: string; password: string; age?: number }) => {
-    const res = await api.post("/auth/register", data);
+export const registerUser = createAsyncThunk<
+  AuthResponse,
+  { email: string; password: string },
+  { rejectValue: ApiError }
+>("auth/register", async (data, { rejectWithValue }) => {
+  try {
+    const res = await api.post<AuthResponse>("/auth/login", data);
     return res.data;
+  } catch (error: unknown) {
+    const responseData = (error as any).response?.data;
+    if (isApiError(responseData)) {
+      return rejectWithValue(responseData);
+    }
   }
-);
+  const res = await api.post("/auth/register", data);
+  return res.data;
+});
 
-export const fetchUserProfile = createAsyncThunk("auth/me", async () => {
+export const fetchUserProfile = createAsyncThunk<
+  User,
+  void,
+  { rejectValue: ApiError }
+>("auth/me", async (_, { rejectWithValue }) => {
+  try {
+    const res = await api.get<User>("/auth/me");
+    return res.data;
+  } catch (error: unknown) {
+    const responseData = (error as any).response?.data;
+    if (isApiError(responseData)) {
+      return rejectWithValue(responseData);
+    }
+  }
   const res = await api.get("/auth/me");
   return res.data;
 });
@@ -47,7 +84,7 @@ export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data: { oldPassword: string; newPassword: string }) => {
     await api.post("/auth/change-password", data);
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -80,4 +117,4 @@ const authSlice = createSlice({
 });
 
 export const { logoutUser } = authSlice.actions;
-export default authSlice.reducer;
+export const authReducer = authSlice.reducer;

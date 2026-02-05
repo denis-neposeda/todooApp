@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { type FC, type FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
-import { registerUser, fetchUserProfile } from "../../store/reducers/authSlice";
-import type { AppDispatch } from "../../store/store";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function RegisterForm() {
+import { type AppDispatch, fetchUserProfile, registerUser } from "@/store";
+import { isApiError } from "@/types";
+
+export const RegisterForm: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -13,7 +14,7 @@ export default function RegisterForm() {
   const [age, setAge] = useState<number | "">("");
   const [error, setError] = useState("");
 
-  const submitHandler = async (e: React.FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -27,14 +28,19 @@ export default function RegisterForm() {
         registerUser({
           email,
           password,
-          age: age === "" ? undefined : age,
-        })
+        }),
       ).unwrap();
 
-      await dispatch(fetchUserProfile());
+      await dispatch(fetchUserProfile()).unwrap();
       navigate("/");
-    } catch (err: any) {
-      setError(err?.message || "Ошибка регистрации");
+    } catch (err: unknown) {
+      if (isApiError(err)) {
+        setError(err.message || err.error || "Ошибка регистрации");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Произошла неизвестная ошибка");
+      }
     }
   };
 
@@ -71,4 +77,4 @@ export default function RegisterForm() {
       </p>
     </form>
   );
-}
+};

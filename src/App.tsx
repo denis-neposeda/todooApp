@@ -1,12 +1,11 @@
+import type { FC } from "react";
 import { Route, Routes } from "react-router-dom";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import HomePage, { type IAppProps } from "./pages/HomePage/HomePage";
-import LoginForm from "./components/LoginForm/LoginForm";
-import RegisterForm from "./components/RegisterForm/RegisterForm";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
-import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
-function App({ toggleTheme, isDark }: IAppProps) {
+import { LoginForm, RegisterForm } from "@/components";
+import { HomePage, type IAppProps, NotFoundPage, ProfilePage } from "@/pages";
+import { ProtectedRoute } from "@/utils";
+
+export const App: FC<IAppProps> = ({ toggleTheme, isDark }: IAppProps) => {
   return (
     <Routes>
       <Route
@@ -32,6 +31,4 @@ function App({ toggleTheme, isDark }: IAppProps) {
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
-}
-
-export default App;
+};

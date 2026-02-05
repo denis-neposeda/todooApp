@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { type FC, type FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
-import { fetchUserProfile, loginUser } from "../../store/reducers/authSlice";
-import type { AppDispatch } from "../../store/store";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+import { type AppDispatch, fetchUserProfile, loginUser } from "@/store";
+import { isApiError } from "@/types";
+
+export const LoginForm: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -12,21 +13,22 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const submitHandler = async (e: React.FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (!email || password.length < 6) {
-      setError("Введите корректные данные");
-      return;
-    }
 
     try {
       await dispatch(loginUser({ email, password })).unwrap();
       await dispatch(fetchUserProfile());
       navigate("/");
-    } catch (err: any) {
-      setError(err?.message || "Ошибка входа");
+    } catch (err: unknown) {
+      if (isApiError(err)) {
+        setError(err.message || err.error || "Ошибка входа");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Неизвестная ошибка");
+      }
     }
   };
 
@@ -56,4 +58,4 @@ export default function LoginForm() {
       </p>
     </form>
   );
-}
+};

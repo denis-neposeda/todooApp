@@ -1,62 +1,37 @@
-import { useEffect } from "react";
-import {
-  Container,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  IconButton,
-  Button,
-} from "@mui/material";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import styled from "styled-components";
-import TodoList from "../../components/TodoList/TodoList";
-import AddTodo from "../../components/AddTodo/AddTodo";
-import {
-  fetchTodos,
-  setFilter,
-  setSort,
-  setLimit,
-} from "../../store/reducers/todoListSlice";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { TodoPagination } from "../../components/TodoPagination/TodoPagination";
+import { type FC, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const Wrapper = styled(Container)`
-  margin-top: 32px;
-`;
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import {
+  Button,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 
-const ControlsWrapper = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-`;
+import {
+  ControlsWrapper,
+  FilterGroup,
+  StyledFormControl,
+  WrapperHomePage,
+} from "./HomePage.styled";
 
-const FilterGroup = styled.div`
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-`;
-
-const StyledFormControl = styled(FormControl)`
-  min-width: 120px;
-  flex: 1;
-`;
+import { AddTodo, TodoList, TodoPagination } from "@/components";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { fetchTodos, setFilter, setLimit, setSort } from "@/store";
 
 export interface IAppProps {
   toggleTheme: () => void;
   isDark: boolean;
 }
 
-function HomePage({ toggleTheme, isDark }: IAppProps) {
+export const HomePage: FC<IAppProps> = ({ toggleTheme, isDark }: IAppProps) => {
   const dispatch = useAppDispatch();
   const { page, limit, filter, error, status, sort } = useAppSelector(
-    (state) => state.todoList
+    (state) => state.todoList,
   );
 
   useEffect(() => {
@@ -64,7 +39,7 @@ function HomePage({ toggleTheme, isDark }: IAppProps) {
   }, [dispatch, page, limit, filter]);
 
   return (
-    <Wrapper maxWidth="sm">
+    <WrapperHomePage maxWidth="sm">
       <ControlsWrapper>
         <Typography variant="h4" component="h1">
           To-Do List
@@ -123,8 +98,6 @@ function HomePage({ toggleTheme, isDark }: IAppProps) {
       {status === "failed" && <p>Ошибка загрузки: {error}</p>}
       {status === "success" && <TodoList />}
       <TodoPagination />
-    </Wrapper>
+    </WrapperHomePage>
   );
-}
-
-export default HomePage;
+};

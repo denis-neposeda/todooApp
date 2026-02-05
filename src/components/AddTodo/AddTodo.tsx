@@ -1,21 +1,17 @@
-import React, { useState } from "react";
-import { TextField, Button } from "@mui/material";
-import styled from "styled-components";
-import { addNewTodo } from "../../store/reducers/todoListSlice";
-import { useAppDispatch } from "../../hooks/redux";
+import { type FC, type FormEvent, useState } from "react";
 
-const Form = styled.form`
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-`;
+import { Button, TextField } from "@mui/material";
 
-const AddTodo: React.FC = () => {
+import { Form } from "@/components";
+import { useAppDispatch } from "@/hooks";
+import { addNewTodo } from "@/store";
+
+export const AddTodo: FC = () => {
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const dispatch = useAppDispatch();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = title.trim();
     if (!trimmed) {
@@ -35,7 +31,7 @@ const AddTodo: React.FC = () => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Введите название задачи"
-        error={!!error}
+        error={error.length > 0}
         helperText={error}
       />
       <Button type="submit" variant="contained">
@@ -44,5 +40,3 @@ const AddTodo: React.FC = () => {
     </Form>
   );
 };
-
-export default AddTodo;

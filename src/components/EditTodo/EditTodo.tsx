@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { TextField, IconButton } from "@mui/material";
+import { type FC, type KeyboardEvent, useState } from "react";
+
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import styled from "styled-components";
-import { useAppDispatch } from "../../hooks/redux";
-import { cancelEditing, editingTodo } from "../../store/reducers/todoListSlice";
+import { IconButton, TextField } from "@mui/material";
+
+import { EditWrapper } from "@/components";
+import { useAppDispatch } from "@/hooks";
+import { cancelEditing, editingTodo } from "@/store";
 
 interface IEditTodoProps {
   todo: {
@@ -13,14 +15,7 @@ interface IEditTodoProps {
   };
 }
 
-const EditWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-`;
-
-const EditTodo: React.FC<IEditTodoProps> = ({ todo }) => {
+export const EditTodo: FC<IEditTodoProps> = ({ todo }) => {
   const [title, setTitle] = useState(todo.text);
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
@@ -38,7 +33,7 @@ const EditTodo: React.FC<IEditTodoProps> = ({ todo }) => {
     dispatch(cancelEditing());
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSave();
     if (e.key === "Escape") handleCancel();
   };
@@ -54,7 +49,7 @@ const EditTodo: React.FC<IEditTodoProps> = ({ todo }) => {
           setError("");
         }}
         onKeyDown={handleKeyDown}
-        error={!!error}
+        error={error.length > 0}
         helperText={error}
         autoFocus
       />
@@ -77,5 +72,3 @@ const EditTodo: React.FC<IEditTodoProps> = ({ todo }) => {
     </EditWrapper>
   );
 };
-
-export default EditTodo;

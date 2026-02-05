@@ -1,49 +1,23 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  Checkbox,
-} from "@mui/material";
+import type { FC } from "react";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import styled from "styled-components";
-import EditTodo from "../EditTodo/EditTodo";
-import type { ITodo } from "../../models/ITodo";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { Checkbox, IconButton, Typography } from "@mui/material";
+
 import {
-  removeTodo,
-  startEditing,
-  toggleTodo,
-} from "../../store/reducers/todoListSlice";
+  Actions,
+  EditTodo,
+  StyledCardContent,
+  Title,
+  TodoCard,
+} from "@/components";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { removeTodo, startEditing, toggleTodo } from "@/store";
+import type { ITodo } from "@/types";
 
 interface ITodoItemProps {
   todo: ITodo;
 }
-
-const TodoCard = styled(Card)`
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  padding: 8px;
-`;
-
-const StyledCardContent = styled(CardContent)`
-  flex: 1;
-  padding: 0;
-`;
-
-const Title = styled(Typography)<{ $completed?: boolean }>`
-  text-decoration: ${({ $completed }) =>
-    $completed ? "line-through" : "none"};
-  color: ${({ theme, $completed }) =>
-    $completed ? theme.palette.text.secondary : theme.palette.text.primary};
-`;
-
-const Actions = styled.div`
-  display: flex;
-  gap: 4px;
-`;
 
 const formatDate = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -56,10 +30,10 @@ const formatDate = (timestamp: number): string => {
   });
 };
 
-const TodoItem: React.FC<ITodoItemProps> = ({ todo }) => {
+export const TodoItem: FC<ITodoItemProps> = ({ todo }) => {
   const dispatch = useAppDispatch();
   const isEditing = useAppSelector(
-    (state) => state.todoList.editingId === todo.id
+    (state) => state.todoList.editingId === todo.id,
   );
 
   const handleToggle = () => {
@@ -113,5 +87,3 @@ const TodoItem: React.FC<ITodoItemProps> = ({ todo }) => {
     </TodoCard>
   );
 };
-
-export default TodoItem;

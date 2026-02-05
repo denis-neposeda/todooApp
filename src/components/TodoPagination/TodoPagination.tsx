@@ -1,10 +1,14 @@
-import Pagination from "@mui/material/Pagination";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { setPage } from "../../store/reducers/todoListSlice";
+import type { FC } from "react";
 
-export const TodoPagination = () => {
+import Pagination from "@mui/material/Pagination";
+
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setPage } from "@/store";
+
+export const TodoPagination: FC = () => {
   const dispatch = useAppDispatch();
-  const { page, totalPages } = useAppSelector((state) => state.todoList);
+  const page = useAppSelector((state) => state.todoList.page);
+  const totalPages = useAppSelector((state) => state.todoList.totalPages);
 
   return (
     <Pagination

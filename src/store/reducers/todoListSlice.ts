@@ -3,15 +3,16 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { ITodo } from "../../models/ITodo";
+
 import {
   addNewTodoApi,
   editingTodoApi,
   fetchTodosRequest,
   removeTodoApi,
-  toggleTodoApi,
   type TodosResponse,
-} from "../../api/todosApi";
+  toggleTodoApi,
+} from "@/api";
+import type { ITodo } from "@/types";
 
 export type FilterType = "all" | "active" | "completed";
 export type SortType = "newest" | "oldest";
@@ -22,7 +23,7 @@ interface ITodoListState {
   page: number;
   limit: number;
   totalPages: number;
-  isLoading: Boolean;
+  isLoading: boolean;
   filter: FilterType;
   sort: SortType;
   editingId: number | null;
@@ -42,21 +43,21 @@ export const addNewTodo = createAsyncThunk<ITodo, string>(
   "todoList/addNewTodo",
   async (text) => {
     return await addNewTodoApi(text);
-  }
+  },
 );
 
 export const removeTodo = createAsyncThunk<number, number>(
   "todoList/removeTodo",
   async (id) => {
     return await removeTodoApi(id);
-  }
+  },
 );
 
 export const toggleTodo = createAsyncThunk<ITodo, number>(
   "todoList/toggleTodo",
   async (id) => {
     return await toggleTodoApi(id);
-  }
+  },
 );
 
 export const editingTodo = createAsyncThunk<
@@ -150,7 +151,7 @@ const todoListSlice = createSlice({
       })
       .addCase(toggleTodo.fulfilled, (state, action) => {
         state.todos = state.todos.map((todo) =>
-          todo.id === action.payload.id ? action.payload : todo
+          todo.id === action.payload.id ? action.payload : todo,
         );
       })
       .addCase(removeTodo.fulfilled, (state, action) => {
@@ -158,7 +159,7 @@ const todoListSlice = createSlice({
       })
       .addCase(editingTodo.fulfilled, (state, action) => {
         state.todos = state.todos.map((todo) =>
-          todo.id === action.payload.id ? action.payload : todo
+          todo.id === action.payload.id ? action.payload : todo,
         );
         state.editingId = null;
       });
@@ -174,4 +175,4 @@ export const {
   setPage,
   setLimit,
 } = todoListSlice.actions;
-export default todoListSlice.reducer;
+export const todoListReducer = todoListSlice.reducer;

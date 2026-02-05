@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { type FC, type FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchUserProfile,
-  changePassword,
-  logoutUser,
-} from "../../store/reducers/authSlice";
-import type { AppDispatch, RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 
-export default function ProfilePage() {
+import {
+  type AppDispatch,
+  changePassword,
+  fetchUserProfile,
+  logoutUser,
+  type RootState,
+} from "@/store";
+
+export const ProfilePage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, status } = useSelector((state: RootState) => state.auth);
 
@@ -22,7 +24,7 @@ export default function ProfilePage() {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  const submitHandler = async (e: React.FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -103,4 +105,4 @@ export default function ProfilePage() {
       </form>
     </div>
   );
-}
+};

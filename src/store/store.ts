@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import todoListReducer from "./reducers/todoListSlice";
-import authReducer from "./reducers/authSlice";
+
+import { authReducer, todoListReducer } from "./reducers";
 
 const rootReducer = combineReducers({
   todoList: todoListReducer,

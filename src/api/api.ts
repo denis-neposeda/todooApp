@@ -1,4 +1,10 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import axios, {
+  type AxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
+
+import type { AuthState } from "@/store";
 
 interface AuthTokens {
   accessToken: string;
@@ -27,7 +33,7 @@ let failedQueue: FailedRequest[] = [];
 
 const processQueue = (
   error: AxiosError | Error | null,
-  token: string | null = null
+  token: string | null = null,
 ) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
@@ -40,7 +46,7 @@ const processQueue = (
 };
 
 api.interceptors.response.use(
-  (res) => res,
+  (res: AxiosResponse<AuthState>) => res,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
@@ -75,7 +81,7 @@ api.interceptors.response.use(
 
         const res = await axios.post<AuthTokens>(
           "http://localhost:3001/auth/refresh",
-          { refreshToken }
+          { refreshToken },
         );
 
         const { accessToken, refreshToken: newRefreshToken } = res.data;
@@ -101,5 +107,5 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
